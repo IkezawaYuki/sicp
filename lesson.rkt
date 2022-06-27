@@ -20,9 +20,64 @@
 
 (/ (* 3 (- 6 2)(- 2 7))(+ (+ 5 4)(- 2(- 3 (+ 6 (/ 4 5))))))
 
+
+
 (define (func a b c)
   (cond ((and (>= b a) (>= c a)) (+ (* b b) (* c c)))
         ((and (>= a b) (>= c b)) (+ (* a a) (* b b)))
         ((and (>= a c) (>= b c)) (+ (* a a) (* c c)))
         )
   )
+
+
+(define (a-plus-abs-b a b)
+  ((if (> b 0) + -) a b))
+
+(define (square x) (* x x))
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+
+(define (good-enough? guess x)
+  (< (abs (- (square guess) x)) 0.001))
+
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x)
+                 x)))
+
+(define (sqrt x)
+  (sqrt-iter 1.0 x))
+
+(define (sqrt2 x)
+  (define (improve guess)
+    (define (average x y)
+      (/ (+ x y) 2))
+    (average guess (/ x guess)))
+  (define (sqrt-iter last-guess next-guess)
+    (define (good-enough?)
+      (< (abs(/ (- last-guess next-guess)next-guess))
+         0.001))
+    (if (good-enough?)
+        next-guess
+        (sqrt-iter next-guess (improve next-guess))))
+  (sqrt-iter 1.0 (improve 1.0)))
+
+
+(define (improve3 x y) (/ (+ (/ x (* y y)) (* 2 y)) 3))
+
+(define (cube-root x)
+  (define (good-enough? guess x)
+    (< (abs (-(* guess guess guess) x)) 0.001))
+  (define (improve guess x)
+    (/ (+ (/ x guess guess) guess guess) 3))
+  (define (cube-root-iter guess x)
+    (if (good-enough? guess x)
+        guess
+        (cube-root-iter (improve guess x) x)))
+  (cube-root-iter 1.0 x))
