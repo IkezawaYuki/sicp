@@ -81,3 +81,44 @@
         guess
         (cube-root-iter (improve guess x) x)))
   (cube-root-iter 1.0 x))
+
+(define (sqrt3 x)
+  (define (good-enough? guess)
+    (< (abs (- (square guess) x)) 0.001))
+  (define (improve guess)
+    (average guess (/ x guess)))
+  (define (sqrt-iter guess)
+    (if (good-enough? guess)
+        guess
+        (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+
+(define (factorical n)
+  (if (= n 1)
+      1
+      (* n (factorical (- n 1)))))
+
+(define (fact-iter product counter max-counter)
+  (if (> counter max-counter)
+      product
+      (fact-iter (* counter product)
+                 (+ counter 1)
+                 max-counter)))
+
+
+(define (factorical2 n)
+  (fact-iter 1 1 n))
+
+(define (inc a) (+ a 1))
+(define (dec a) (- a 1))
+
+(define (+ a b)
+  (if (= a 0)
+      b
+      (inc (+ (dec a) b))))
+
+
+
+
+
+
