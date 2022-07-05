@@ -2,29 +2,30 @@
 
 (define (square x) (* x x))
 
-(define (divides? a b)
-  (= (remainder b a) 0))
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
 
-(define (find-divisor n test-divisor)
-  (cond ((> (square test-divisor) n) n)
-        ((divides? test-divisor n) test-divisor)
-        (else (find-divisor n(+ test-divisor 1)))))
+(define (carmichael-test n) ;;returns n-1 for carmichael number n
+  (define (ctest a i)
+    (cond ((= a n) i)
+          ((= (expmod a n n) a) (ctest (+ a 1) (+ i 1)))
+          (else (ctest (+ a 1) i))))
+  (ctest 1 0))
 
-(define (smallest-divisor n)
-  (find-divisor n 2))
+(define (cube x) (* x x x))
 
-(define (prime? n)
-  (= n (smallest-divisor n)))
+(define (sum-integers a b)
+  (if (> a b)
+      0
+      (+ a (sum-integers (+ a 1) b))))
 
-(define (report-prime elapsed-time)
-  (display "***")
-  (display elapsed-time))
-
-(define (start-prime-test n start-time)
-  (if (prime? n)
-      (report-prime (- (runtime) start-time))))
-
-(define (timed-prime-test n)
-  (newline)
-  (display n)
-  (start-prime-test n (runtime)))
+(define (sum-cubes a b)
+  (if (> a b)
+      0
+      (+ (cube a) (sum-cubes (+ a 1) b)
