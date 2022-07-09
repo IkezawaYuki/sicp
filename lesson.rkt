@@ -80,9 +80,77 @@
         (iter (next a) (+ (term a) result))))
   (iter a 0))
 
+(define (accumulate combiner null-value term a next b)
+  (if (> a b)
+      null-value
+      (combiner (term a)
+                (accumulate combiner null-value term (next a) next b))))
 
-(define (factorial n)
-  (product identity 1 inc n))
+(define (sum3 term a next b)
+  (accumulate + 0 term a next b))
 
-(display (factorial 10)) (newline)
+(define (product3 factor a next b)
+  (accumulate * 1 factor a next b))
+
+(define (accumulate2 combiner null-value term a next b)
+  (define (accumulate-iter a result)
+    (if (> a b)
+        result
+        (accumulate-iter (next a) (combiner (term a) result))))
+  (accumulate-iter a null-value))
+
+(define (pi-sum3 a b)
+  (sum (lambda (x) (/ 1.0 (* x (+ x 2))))
+       a
+       (lambda (x) (+ x 4))
+       b))
+
+(define (intergral f a b dx)
+  (* (sum f
+          (+ a (/ dx 2.0))
+          (lambda (x) (+ x dx))
+          b)
+     dx))
+
+(define (plus4 x) (+ x 4))
+
+(define plus5 (lambda (x) (+ x 5)))
+
+((lambda (x y z) (+ x y (square z))) 1 2 3)
+
+(define (f x y)
+  (define (f-helper a b)
+    (+ (* x (square a))
+       (* y b)
+       (* a b)))
+    (f-helper (+ 1 (* x y))
+              (- 1 y)))
+
+(define (f2 x y)
+  ((lambda (a b)
+     (+ (* x (square a))
+        (* y b)
+        (* a b)))
+   (+ 1 (* x y))
+   (- 1 y)))
+
+(define (f3 x y)
+  ((lambda (a b)
+     (+ (* x (square a))
+        (* y b)
+        (* a b)))
+   (+ 1 (* x y))
+   (- 1 y)))
+
+
+(define (f4 x y)
+  (let ((a (+ 1 (* x y)))
+        (b (- 1 y)))
+    (+ (* x (square a))
+       (* y b)
+       (* a b))))
+
+(+ (let ((x 3))
+   (+ x (* x 10)))
+   x)
 
