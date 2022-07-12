@@ -25,7 +25,7 @@
 
 (cont-frac-iter (lambda(i) 1.0)(lambda(i) 1.0) 12)
 
-(define (cont-frac n d k)
+(define (cont-frac1 n d k)
   (define (cf res i)
     (if (= i 0)
         res
@@ -39,7 +39,7 @@
                             1.0))
               20))
 
-(define (cont-frac n d k)
+(define (cont-frac3 n d k)
   (define (cf res i)
     (if (= i 0)
         res
@@ -53,6 +53,36 @@
 (tan-cf (/ 3.14159 4) 10)
 
 
+(define (average-damp f)
+  (lambda(x)(average x (f x))))
+
+(define (sqrt x)
+  (fixed-point (average-damp (lambda (y)(/ x y)))
+               1.0))
 
 
+(define (cube-root x)
+  (fixed-point (average-damp (lambda (y)(/ x(square y))))
+               1.0))
 
+(define dx 0.0001)
+
+(define (deriv g)
+  (lambda (x)
+    (/ (- (g (+ x dx)) (g x))
+       dx)))
+
+(define (cube x) (* x x x))
+
+((derive cube) 5)
+
+(define (newton-transform g)
+  (lambda(x)
+    (- x (/ (g x) ((deriv g) x)))))
+
+(define (newtons-method g guess)
+  (fixed-point (newton-transform g) guess))
+
+(define (sqrt x)
+  (newtons-method (lambda (y)(- (square y) x))
+                  1.0))
