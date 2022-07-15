@@ -41,7 +41,7 @@
 (define (oddp x)
   (= (remainder x 2) 1))
 
-(define (repeated f n)
+(define (repeated2 f n)
   (if (= n 0)
       (lambda (x) x)
       (compose f(repeated f(- n 1)))))
@@ -71,6 +71,52 @@
       (lambda(x) x)
       (compose f (repeated f (- n 1)))))
 
+
+(define tolerance 0.00001)
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (average-damp f)
+  (lambda(x)(average x (f x))))
+
+
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(define (n-th-root n x)
+  (fixed-point ((repeated average-damp k)
+                (lamdba (y) (/ x (empty y (- n 1))))) 1.0))
+
+(define (iterative-improve test improve)
+  (lambda (g)
+    (define (iter g)
+      (if (test g) g
+          (iter (improve g))))
+    (iter g)))
+
+
+(define (sqrt x)
+  (define (good-enough? g)
+    (define (square x) (* x x))
+    (< (abs (- (square g) x)) 0.0001))
+  (define (improve g)
+    (define (average x y)(/ (+ x y) 2))
+    (average g (/ x g)))
+  ((iterative-improve good-enough? improve) 1.0))
+
+
+(define (fixed-point f)
+  (define (close-enough? g)
+    (< (abs (- g (f g))) 0.0001))
+  ((iterative-improve close-enough? f) 1.0))
 
 
 
