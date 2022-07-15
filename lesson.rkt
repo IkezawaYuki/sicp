@@ -1,123 +1,60 @@
 #lang racket
 
-(define dx 0.00001)
+(define x (cons 1 2))
 
-(define (deriv g)
-  (lambda(x)
-    (/ (- (g (+ x dx)) (g x))
-       dx)))
+(car x)
 
-(define (newton-transform g)
-  (lambda(x)
-    (- x(/ (g x)((deriv g) x)))))
+(cdr x)
 
-(define tolerance 0.00001)
+(define y (cons 3 4))
 
-(define (fixed-point f first-guess)
-  (define (close-enough? v1 v2)
-    (< (abs (- v1 v2)) tolerance))
-  (define (try guess)
-    (let ((next (f guess)))
-      (if (close-enough? guess next)
-          next
-          (try next))))
-  (try first-guess))
+(define z (cons x y))
 
-(define (cubic a b c)
-  (lambda(x)(+ (* (+ (* (+ x a) x) b) x) c)))
+(car (car z))
 
-(newtons-method (cubic 3 3 1) 1)
+(cdr (cdr z))
 
-(define (compose f g)
-  (lambda(x) (f (g x))))
+(define (make-rat n d) (cons n d))
 
-(define (square x) (* x x))
+(define (numer x) (car x))
 
-(define (repeated f n)
-  (if (= n 0)
-      (lambda (x) x)
-      (compose f (repeated f(- n 1)))))
+(define (denom x) (cdr x))
 
-(define (oddp x)
-  (= (remainder x 2) 1))
+(define (print-rat x)
+  (newline)
+  (display (numer x))
+  (display "/")
+  (display (denom x)))
 
-(define (repeated2 f n)
-  (if (= n 0)
-      (lambda (x) x)
-      (compose f(repeated f(- n 1)))))
+(define one-half (make-rat 1 2))
 
-(define dx 0.1)
+(print-rat one-half)
 
-(define (smooth f)
-  (lambda (x) (/ (+ (f x)(f (- x dx))(f (+ x dx))) 3)))
+(define one-third (make-rat 1 3))
 
-(define (n-fold-smooth f n)
-  ((repeated smooth n) f))
+(define (add-rat x y)
+  (make-rat (+ (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
 
-(define (f x)
-  (let ((ix (floor x)))
-    (if (oddp ix)(+ (- ix x) 1)(-x ix))))
+(define (sub-rat x y)
+  (make-rat (- (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
 
-(do ((x 5(+ x 1)))((= x 25))
-  (display (list (/ x 10)(f (/ x 10)))) (newline))
+(define (mul-rat x y)
+  (make-rat (* (numer x) (numer y))
+            (* (denom x) (denom y))))
 
-(define k 1)
+(define (div-rat x y)
+  (make-rat (* (numer x) (denom y))
+            (* (denom x) (numer y))))
 
-(define (compose f g)
-  (lambda (x)(f (g x))))
+(define (equal-rat? x y)
+  (= (* (numer x) (denom y))
+     (* (numer y) (denom x))))
 
-(define (repeated f n)
-  (if (= n 0)
-      (lambda(x) x)
-      (compose f (repeated f (- n 1)))))
-
-
-(define tolerance 0.00001)
-
-(define (average x y)
-  (/ (+ x y) 2))
-
-(define (average-damp f)
-  (lambda(x)(average x (f x))))
-
-
-(define (fixed-point f first-guess)
-  (define (close-enough? v1 v2)
-    (< (abs (- v1 v2)) tolerance))
-  (define (try guess)
-    (let ((next (f guess)))
-      (if (close-enough? guess next)
-          next
-          (try next))))
-  (try first-guess))
-
-(define (n-th-root n x)
-  (fixed-point ((repeated average-damp k)
-                (lamdba (y) (/ x (empty y (- n 1))))) 1.0))
-
-(define (iterative-improve test improve)
-  (lambda (g)
-    (define (iter g)
-      (if (test g) g
-          (iter (improve g))))
-    (iter g)))
-
-
-(define (sqrt x)
-  (define (good-enough? g)
-    (define (square x) (* x x))
-    (< (abs (- (square g) x)) 0.0001))
-  (define (improve g)
-    (define (average x y)(/ (+ x y) 2))
-    (average g (/ x g)))
-  ((iterative-improve good-enough? improve) 1.0))
-
-
-(define (fixed-point f)
-  (define (close-enough? g)
-    (< (abs (- g (f g))) 0.0001))
-  ((iterative-improve close-enough? f) 1.0))
-
+(print-rat (add-rat one-half one-third))
 
 
 
