@@ -93,3 +93,14 @@
   (display ")"))
 
 
+(define (make-rectangle corner0 corner1)
+  (cons corner0 corner1))
+(define (corner0 rec)(car rec))
+(define (corner1 rec)(cdr rec))
+(define (side0 rec)(abs (- (x-point (corner0 rec))
+                           (x-point (corner1 rec)))))
+(define (side1 rec)(abs (- (y-point (corner0 rec))
+                           (y-point (corner1 rec)))))
+
+(define (perimeter rec) (* (+ (side0 rec) (side1 rec)) 2))
+(define (area rec) (* (side0 rec) (side1 rec)))
