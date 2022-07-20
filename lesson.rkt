@@ -1,106 +1,44 @@
 #lang racket
 
-(define x (cons 1 2))
+(define (cons x y)
+  (lambda (m) (m x y)))
 
-(car x)
+(define (car z)
+  (z (lambda (p q) p)))
 
-(cdr x)
+(define (cdr z)
+  (z (lambda (p q) q)))
 
-(define y (cons 3 4))
+(define (fast-expt b n)
+  (cond ((= n 0) 1)
+        ((even? n) (square (fast-expt b (/ n 2))))
+        (else (* b (fast-expt b (- n 1))))))
 
-(define z (cons x y))
+(define (even? n)
+  (= (remainder n 2) 0))
 
-(car (car z))
+(define (square x) (* x x))
 
-(cdr (cdr z))
+(define (pcons x y)
+  (* (fast-expt 2 x) (fast-expt 3 y)))
 
-(define (_make-rat n d) (cons n d))
+(define (pcar z)
+  (if (= (remainder z 2) 0)
+      (+ 1 (pcar (/ z 2)))
+      0))
 
-(define (gcd a b)
-  (if (= b 0)
-      a
-      (gcd b (remainder a b))))
-
-(define (make-rat n d)
-  (let ((g (abs (gcd n d))))
-    (if (< d 0)
-        (cons (/ (- n) g) (/ (- d) g))
-        (cons (/ n g) (/ d g)))))
-
-
-(define (numer x) (car x))
-
-(define (denom x) (cdr x))
-
-(define (print-rat x)
-  (newline)
-  (display (numer x))
-  (display "/")
-  (display (denom x)))
-
-(define one-half (make-rat 1 2))
-
-(print-rat one-half)
-
-(define one-third (make-rat 1 3))
-
-(define (add-rat x y)
-  (make-rat (+ (* (numer x) (denom y))
-               (* (numer y) (denom x)))
-            (* (denom x) (denom y))))
-
-(define (sub-rat x y)
-  (make-rat (- (* (numer x) (denom y))
-               (* (numer y) (denom x)))
-            (* (denom x) (denom y))))
-
-(define (mul-rat x y)
-  (make-rat (* (numer x) (numer y))
-            (* (denom x) (denom y))))
-
-(define (div-rat x y)
-  (make-rat (* (numer x) (denom y))
-            (* (denom x) (numer y))))
-
-(define (equal-rat? x y)
-  (= (* (numer x) (denom y))
-     (* (numer y) (denom x))))
-
-(print-rat (add-rat one-half one-third))
-
-(define (make-point x y) (cons x y))
-(define (x-point p)(car p))
-(define (y-point p)(cdr p))
-
-(define (make-segment s e)(cons s e))
-(define (start-segment seg)(car seg))
-(define (end-segment seg)(cdr seg))
-
-(define (midpoint-segment seg)
-  (define (average a b)(/ (+ a b) 2))
-  (make-point
-   (average (x-point (start-segment seg))
-            (x-point (end-segment seg)))
-   (average (y-point (start-segment seg))
-            (y-point (end-segment seg)))))
-
-(define (print-point p)
-  (newline)
-  (display "(")
-  (display (x-point p))
-  (display ",")
-  (display (y-point p))
-  (display ")"))
+(define (pcdr z)
+  (if (= (remainder z 3) 0)
+      (+ 1 (pcdr (/ z 3)))
+      0))
 
 
-(define (make-rectangle corner0 corner1)
-  (cons corner0 corner1))
-(define (corner0 rec)(car rec))
-(define (corner1 rec)(cdr rec))
-(define (side0 rec)(abs (- (x-point (corner0 rec))
-                           (x-point (corner1 rec)))))
-(define (side1 rec)(abs (- (y-point (corner0 rec))
-                           (y-point (corner1 rec)))))
 
-(define (perimeter rec) (* (+ (side0 rec) (side1 rec)) 2))
-(define (area rec) (* (side0 rec) (side1 rec)))
+
+
+
+
+
+
+
+
