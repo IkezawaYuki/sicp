@@ -49,13 +49,6 @@
   (make-interval (- (lower-bound x) (lower-bound y))
                  (- (upper-bound x) (upper-bound y))))
 
-let a = 4
-let b = 5
-
-(define a 4)
-(define b 5)
-(define c (+ a b))
-
 
 (define (mul-interval x y)
   (let ((p1 (* (lower-bound x) (lower-bound y)))
@@ -83,6 +76,8 @@ let b = 5
 
 (define (center i)
   (/ (+ (upper-bound i) (lower-bound i)) 2))
+
+(define one-through-four (list 1 2 3 4))
 
 
 
