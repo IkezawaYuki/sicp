@@ -31,3 +31,17 @@
   (if (null? list1)
       list2
       (cons (car list1) (append (cdr list1)list2))))
+
+(last-pair (list 23 72 149 34))
+
+(reverse (list 1 4 9 16 25))
+
+(define (same-parity first . rest)
+  (define (sp f r)
+    (cond ((null? r) '())
+          ((= (remainder f 2)(remainder (car r) 2))
+           (cons (car r)(sp f (cdr r))))
+          (else (sp f (cdr r)))))
+  (cons first (sp first rest)))
+
+
