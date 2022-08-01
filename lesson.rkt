@@ -1,18 +1,18 @@
 #lang racket
 
-
-(define (map proc items)
+(define (square-list items)
   (if (null? items)
-      null
-      (cons (proc (car items))
-            (map proc (cdr items)))))
+      '()
+      (cons (square (car items)) (square-list (cdr items)))))
 
-(map abs (list -10 2.5 -11.6 17))
+(define (square-list items)
+  (map (lambda (x) (square x)) items))
 
-(map (lambda (x) (* x x))
-     (list 1 2 3 4))
-
-
-(define (scale-list items factor)
-  (map (lambda (x) (* x factor))
-       items))
+(define (square-list items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons (square (car things))
+                    answer))))
+  (iter items nil))
