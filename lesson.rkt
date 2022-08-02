@@ -5,10 +5,10 @@
       '()
       (cons (square (car items)) (square-list (cdr items)))))
 
-(define (square-list items)
+(define (square-lists items)
   (map (lambda (x) (square x)) items))
 
-(define (square-list items)
+(define (square-list3 items)
   (define (iter things answer)
     (if (null? things)
         answer
@@ -16,3 +16,8 @@
               (cons (square (car things))
                     answer))))
   (iter items nil))
+
+(define (for-each proc list)
+  (if (null? list) '()
+      (begin (proc (car list))
+             (for-each proc (cdr list)))))
