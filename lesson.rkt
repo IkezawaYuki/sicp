@@ -1,23 +1,21 @@
 #lang racket
 
-(define (square-list items)
-  (if (null? items)
-      '()
-      (cons (square (car items)) (square-list (cdr items)))))
+(cons (list 1 2) (list 3 4))
 
-(define (square-lists items)
-  (map (lambda (x) (square x)) items))
+(define x (cons (list 1 2) (list 3 4)))
 
-(define (square-list3 items)
-  (define (iter things answer)
-    (if (null? things)
-        answer
-        (iter (cdr things)
-              (cons (square (car things))
-                    answer))))
-  (iter items nil))
+(length x)
 
-(define (for-each proc list)
-  (if (null? list) '()
-      (begin (proc (car list))
-             (for-each proc (cdr list)))))
+(define (count-leaves x)
+  (cond ((null? x) 0)
+        ((not (pair? x)) 1)
+        (else (+ (count-leaves (car x))
+                 (count-leaves (cdr x))))))
+
+(count-leaves x)
+
+(define (deep-reverse l)
+  (if (pair? l)
+      (append (deep-reverse (cdr l))
+              (list (deep-reverse (car l))))
+      l))
