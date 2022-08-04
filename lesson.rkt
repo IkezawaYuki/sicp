@@ -19,3 +19,20 @@
       (append (deep-reverse (cdr l))
               (list (deep-reverse (car l))))
       l))
+
+(define (fringe l)
+  (if (pair? l)
+      (if (pair? (car l))
+          (append (fringe (car l)) (fringe (cdr l)))
+          (cons (car l) (fringe (cdr l))))
+      l))
+
+(define (make-mobile left right)
+  (list left right))
+
+(define (left-branch mobile) (car mobile))
+(define (right-branch mobile) (cadr mobile))
+
+(define (branch-length branch) (car branch))
+(define (branch-structre branch) (cadr branch))
+
