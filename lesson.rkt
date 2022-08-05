@@ -34,5 +34,28 @@
 (define (right-branch mobile) (cadr mobile))
 
 (define (branch-length branch) (car branch))
-(define (branch-structre branch) (cadr branch))
+(define (branch-structure branch) (cadr branch))
+
+(define (total-weight mobile)
+  (if (not (pair? mobile)) mobile
+      (let ((left-b (left-branch mobile))
+            (right-b (right-branch mobile)))
+        (let ((left-s (branch-structure left-b))
+              (right-s (branch-structure right-b)))
+          (+ (total-weight left-s)
+             (total-weight right-s))))))
+
+(define (balanced? mobile)
+  (if (not (pair? mobile))
+      (let ((left-b (left-branch mobile))
+            (right-b (right-branch mobile)))
+        (let ((left-s (branch-structure left-b))
+              (right-s (branch-structure right-b)))
+          (and
+           (= (* (branch-length left-b)
+                 (total-weight left-s))
+              (* (branch-length right-b)
+                 (total-weight right-s)))
+           (balanced? left-s) (balanced? right-s))))))
+
 
