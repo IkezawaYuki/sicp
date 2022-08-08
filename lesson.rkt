@@ -13,7 +13,7 @@
                    (list 6 7)))
 
 
-(define (square-tree tree)
+(define (square-tree2 tree)
   (if (pair? tree)
       (map (lambda (x) (square-tree x)) tree)
       (* tree tree)))
@@ -25,3 +25,9 @@
         (else (cons (tree-map f (car tree))
                     (tree-map f (cdr tree))))))
 
+(define (subsets s)
+  (if (null? s)
+      (list '())
+      (let ((rest (subsets (cdr s))))
+        (append rest (map (lambda (x) (cons (car s) x))
+                          rest)))))
