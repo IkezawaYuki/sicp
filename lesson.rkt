@@ -24,3 +24,11 @@
                       (enumurate-tree (cdr tree))))))
 
 (enumurate-tree (list 1 (list 2 (list 3 4)) 5))
+
+
+(define (even-fibs n)
+  (accumulate cons
+              null
+              (filter even?
+                      (map fib
+                           (enumerate-inteval 0 n)))))
