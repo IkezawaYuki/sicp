@@ -1,20 +1,15 @@
 #lang racket
 
-(define (list-fib-squares n)
-  (accumulate cons
-              null
-              (map square
-                   (map fib
-                        (enumerate-interval 0 n)))))
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
 
-(define (product-of-squares-of-odd-elements sequence)
-  (accumulate *
-              1
-              (map square
-                   (filter odd? sequence))))
+(define sequence (list 1 2 3 4 5))
 
-(define (salary-of-highest-paid-programmer records)
-  (accumulate max
-              0
-              (map salary
-                   (filter programmer? records))))
+sequence
+
+(car sequence)
+
+(cdr sequence)
