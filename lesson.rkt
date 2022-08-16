@@ -13,3 +13,10 @@ sequence
 (car sequence)
 
 (cdr sequence)
+
+(define (horner-eval x coefficient-sequence)
+  (accumulate
+   (lambda (this-coeff higer-terms)
+     (+ (* higer-terms x) this-coeff))
+   0
+   coefficient-sequence))
