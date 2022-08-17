@@ -6,17 +6,12 @@
       (op (car sequence)
           (accumulate op initial (cdr sequence)))))
 
-(define sequence (list 1 2 3 4 5))
+(define (map p sequence)
+  (accumulate (lambda (x y)
+                (cons (p x) y)) '() sequence))
 
-sequence
+(map (lambda (x) (* x x)) '(0 1 2 3))
 
-(car sequence)
+(define (append seq1 seq2)
+  (accumulate cons seq2 seq1))
 
-(cdr sequence)
-
-(define (horner-eval x coefficient-sequence)
-  (accumulate
-   (lambda (this-coeff higer-terms)
-     (+ (* higer-terms x) this-coeff))
-   0
-   coefficient-sequence))
