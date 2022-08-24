@@ -53,3 +53,11 @@
   (let ((cols (transpose n)))
     (map (lambda (x)
            (map (lambda (y)(dot-product x y)) cols)) m)))
+
+(define (fold-left op initial sequence)
+  (define (iter result rest)
+    (if (null? rest)
+        result
+        (iter (op result (car rest))
+              (cdr rest))))
+  (iter initial sequence))
