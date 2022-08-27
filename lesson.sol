@@ -21,5 +21,29 @@ contract BlindAuction {
 
   event AuctionEnded(address winner, uint highestBid);
 
+  modifier onlyBefore(uint _time) { require(now < _time); _; }
+  modifier onlyAfter(uint _time) { require(now > _time); _; }
+
+  constructor(
+    uint _biddingTime,
+    uint _revealTime,
+    address payable _beneficiary
+  ) public {
+    beneficiay = _beneficiary;
+    biddingEnd = now + _biddingTime;
+    revealEnd = biddingEnd + _revealTime;
+  }
+
+  function bid(bytes32 _blindedBid)
+      public
+      payable
+      onlyBefore(biddingEnd)
+  {
+    bids[msg.sender].push(Bid({
+      blindedBid: _blindedBid,
+      deposit: msg.value
+    }));
+  }
+
   
 }
