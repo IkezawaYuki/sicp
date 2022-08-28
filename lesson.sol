@@ -45,5 +45,18 @@ contract BlindAuction {
     }));
   }
 
-  
+  function reveal(
+    uint[] memory _values,
+    bool[] memory _fake,
+    bytes32[] memory _secret
+  )
+    public
+    onlyAfter(biddingEnd)
+    onlyBefore(revealEnd)
+  {
+    uint length = bids[msg.sender].length;
+    require(_values.length == length);
+    require(_fake.length == length);
+    require(_secret.length == length);
+  }
 }
