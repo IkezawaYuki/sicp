@@ -58,5 +58,24 @@ contract BlindAuction {
     require(_values.length == length);
     require(_fake.length == length);
     require(_secret.length == length);
+
+    uint refund;
+    for (uint i = 0; i < length; i++) {
+      Bid storage bidToCheck = bids[msg.sender][i];
+      (uint value, bool fake, bytes32 secret) = 
+              (_values[i], _fake[i], _secret[i]);
+      if (bidToCheck.blindedBid != keccak256(abi.encodePacked(value, fake, secret))) {
+        continue;
+      }
+      refund += bidToCheck.deposit;
+      if (!fake && bidToCheck.deposit >= value) {
+        if (placeBid(meg.sender, value))
+          refund -= value;
+      }
+      bidToCheck.blindedBid = bytes32(0);
+    }
+    msg.sender.transfer(refund);
   }
+
+  
 }
