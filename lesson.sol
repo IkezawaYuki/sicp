@@ -69,7 +69,7 @@ contract BlindAuction {
       }
       refund += bidToCheck.deposit;
       if (!fake && bidToCheck.deposit >= value) {
-        if (placeBid(meg.sender, value))
+        if (placeBid(msg.sender, value))
           refund -= value;
       }
       bidToCheck.blindedBid = bytes32(0);
@@ -77,5 +77,18 @@ contract BlindAuction {
     msg.sender.transfer(refund);
   }
 
+  function placeBid(address bidder, uint value) internal
+          returns (bool success)
+  {
+    if (value <= highestBid) {
+      return false;
+    }
+    if (highestBidder != address(0)) {
+      pendingReturns[highestBidder] += highestBid;
+    }
+    highestBid = value;
+    highestBidder = bidder;
+    return true;
+  }
   
 }
