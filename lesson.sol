@@ -90,5 +90,22 @@ contract BlindAuction {
     highestBidder = bidder;
     return true;
   }
-  
+
+  function withdraw() public {
+    uint amount = pendingReturns[msg.sender];
+    if (amount > 0) {
+      pendingReturns[msg.sender] = 0;
+      msg.sender.transfer(amount);
+    }
+  }
+
+  function auctionEnd()
+      public
+      onlyAfter(revealEnd)
+  {
+    require(!ended);
+    emit AuctionEnded(highestBidder, highestBid);
+    ended = true;
+    beneficiay.transfer(highestBid);
+  }
 }

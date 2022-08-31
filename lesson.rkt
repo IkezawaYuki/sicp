@@ -61,3 +61,15 @@
         (iter (op result (car rest))
               (cdr rest))))
   (iter initial sequence))
+
+
+(accumulate append
+            nil
+            (map (lambda (i)
+                   (map (lambda (j) (list i j))
+                        (enumerate-interval 1 (- i 1))))
+                   (enumulate-interval 1 n)))
+
+(define (flatmap proc seq)
+  (accumulate append nil (map proc seq)))
+
