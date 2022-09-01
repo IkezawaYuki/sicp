@@ -73,3 +73,11 @@
 (define (flatmap proc seq)
   (accumulate append nil (map proc seq)))
 
+(define (flatmap proc seq)
+  (accumulate append nil (map proc seq)))
+
+(define (prime-sum? pair)
+  (prime? (+ (car pair) (cadr pair))))
+
+(define (make-pair-sum pair)
+  (list (car pair) (cadr pair) (+ (car pair) (cadr pair))))
