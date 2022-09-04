@@ -1,100 +1,15 @@
 #lang racket
 
-(define (accumulate op initial sequence)
-  (if (null? sequence)
-      initial
-      (op (car sequence)
-          (accumulate op initial (cdr sequence)))))
-
-(define (map p sequence)
-  (accumulate (lambda (x y)
-                (cons (p x) y)) '() sequence))
-
-(map (lambda (x) (* x x)) '(0 1 2 3))
-
-(define (append seq1 seq2)
-  (accumulate cons seq2 seq1))
-
-
-(define (length sequence)
-  (accumulate (lambda (x y) (+ y 1)) 0 sequence))
-
-(length '(a b c d))
-
-(define (horner-eval x coefficient-sequence)
-  (accumulate
-   (lambda (this-coeff higer-terms)
-     (+ (* higer-terms x) this-coeff))
-   0
-   coefficient-sequence))
-
-(horner-eval 2 (list 1 3 0 5 0 1))
-
-(define (count-leaves t)
-  (accumulate + 0
-              (map (lambda (x) (if (pair? x) (count-leaves x) 1)) t)))
-
-(define (accumulate-n op init seqs)
-  (if (null? (car seqs))
-      '()
-      (cons (accumulate op init (map (car seqs))
-                        (accumulate-n op init (map cdr seqs))))))
-
-(define (dot-product v w)
-  (accumulate + 0 (map * v w)))
-
-(define (matrix-*-vector m v)
-  (map (lambda (x) (dot-product v x)) m))
-
-(define (transpose mat)
-  (accumulate-n cons '() mat))
-
-(define (matrix-*-matrix m n)
-  (let ((cols (transpose n)))
-    (map (lambda (x)
-           (map (lambda (y)(dot-product x y)) cols)) m)))
-
-(define (fold-left op initial sequence)
-  (define (iter result rest)
-    (if (null? rest)
-        result
-        (iter (op result (car rest))
-              (cdr rest))))
-  (iter initial sequence))
-
-
-(accumulate append
-            nil
-            (map (lambda (i)
-                   (map (lambda (j) (list i j))
-                        (enumerate-interval 1 (- i 1))))
-                   (enumulate-interval 1 n)))
-
-(define (flatmap proc seq)
-  (accumulate append nil (map proc seq)))
-
-(define (flatmap proc seq)
-  (accumulate append nil (map proc seq)))
-
-(define (prime-sum? pair)
-  (prime? (+ (car pair) (cadr pair))))
-
-(define (make-pair-sum pair)
-  (list (car pair) (cadr pair) (+ (car pair) (cadr pair))))
-
-(define (prime-sum-pairs n)
-  (map make-pair-sum
-       (filter prime-sum?
-               (flatmap
-                (lambda (i)
-                  (map (lambda (j) (list i j))
-                       (enumulate-interval 1 (- i 1))))
-                (enumerate-interval i n)))))
-
-(define (permutations s)
-  (if (null? s)
-      (list nil)
-      (flatmap (lambda (x)
-                 (map (lambda (p) (cons x p))
-                      (permutations (remove x s))))
-               s)))
+(define (queens board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) (safe? k positions))
+         (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row)
+                   (adjoin-position new-row k rest-of-queens))
+                 (enumerate-interval 1 board-size)))
+          (queens-cols (- k 1))))))
+    (queens-cols board-size))
